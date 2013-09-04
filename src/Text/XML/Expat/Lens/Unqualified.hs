@@ -10,9 +10,9 @@
 -- 
 -- A simple Hexpat lens module.
 -- 
--- Lenses will provide the power to do very concise XML tree
--- diving. This module provides a less general interface to the Hexpat
--- datatypes via lenses.
+-- Lenses provide power to do very concise XML tree diving. This
+-- module provides a less general interface to the Hexpat datatypes
+-- via lenses.
 
 {-# LANGUAGE TypeFamilies #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
