@@ -1,5 +1,5 @@
 name:                hexpat-lens
-version:             0.0.0.1
+version:             0.0.1
 synopsis:            Lenses for Hexpat.
 license:             MIT
 license-file:        LICENSE
