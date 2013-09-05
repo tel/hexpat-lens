@@ -43,6 +43,9 @@ _XMLWithOptions opts = prism format' (\s -> bimap (const s) id $ parse' opts s)
 -- | Uses "tag soup" parsing to build a 'UNode' tree. Technically a
 -- retract, since @_HTML@ tries very hard to return *something*, we
 -- get an 'Iso' instead of a 'Prism'.
+-- 
+-- prop> view (from _HTML . _HTML) = id
+-- 
 _HTML
   :: (GenericXMLString text) => Iso' S.ByteString (UNode text)
 _HTML = _HTMLWithOptions TS.parseOptions
@@ -52,6 +55,9 @@ _HTML = _HTMLWithOptions TS.parseOptions
 -- retract, since @_HTML@ tries very hard to return *something*, we
 -- get an 'Iso' instead of a 'Prism'. Uses the *fast* tag soup parsing
 -- options.
+-- 
+-- prop> view (from _HTML' . _HTML') = id
+-- 
 _HTML'
   :: (GenericXMLString text) => Iso' S.ByteString (UNode text)
 _HTML' = _HTMLWithOptions TS.parseOptions
@@ -59,6 +65,7 @@ _HTML' = _HTMLWithOptions TS.parseOptions
 
 -- | Like '_HTML but allows choice of 'TS.ParseOptions'.
 _HTMLWithOptions
-  :: (GenericXMLString text) => TS.ParseOptions S.ByteString -> Iso' S.ByteString (UNode text)
+  :: (GenericXMLString text) =>
+     TS.ParseOptions S.ByteString -> Iso' S.ByteString (UNode text)
 _HTMLWithOptions opts = iso (parseTagsOptions opts) format'
 {-# INLINE _HTMLWithOptions #-}
