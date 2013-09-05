@@ -14,6 +14,7 @@
 -- module provides a less general interface to the Hexpat datatypes
 -- via lenses.
 
+{-# OPTIONS -fno-warn-orphans #-}
 {-# LANGUAGE TypeFamilies #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
 {-# LANGUAGE TypeSynonymInstances #-}
@@ -32,7 +33,7 @@ import Text.XML.Expat.Tree
 
 name :: Traversal' (UNode t) t
 name inj (Element n a c) = (\n' -> Element n' a c) <$> inj n
-name inj t               = pure t
+name _   t               = pure t
 {-# INLINE name #-}
 
 -- | Traverses to the list of attributes of an 'Element'. This is as
@@ -41,7 +42,7 @@ name inj t               = pure t
 
 attributes :: Traversal' (UNode t) (UAttributes t)
 attributes inj (Element n a c) = (\a' -> Element n a' c) <$> inj a
-attributes inj t               = pure t
+attributes _   t               = pure t
 {-# INLINE attributes #-}
 
 -- The @attributes@ form, effectively, a lookup table allowing us to
@@ -75,7 +76,7 @@ instance ( GenericXMLString a
 
 children :: Traversal' (UNode t) [UNode t]
 children inj (Element n a c) = (\c' -> Element n a c') <$> inj c
-children inj t               = pure t
+children _   t               = pure t
 {-# INLINE children #-}
 
 -- | Prismatic access to the text of a 'Text' node. This is more

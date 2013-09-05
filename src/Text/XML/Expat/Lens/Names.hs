@@ -31,7 +31,6 @@ import Control.Lens hiding (children)
 
 import Text.XML.Expat.Tree
 
-import Data.Data
 import Control.DeepSeq
 import System.IO.Unsafe
 
@@ -39,11 +38,11 @@ class HasLocalPart a where
   localPart :: Lens' (a t) t
 
 prefix :: Lens' (QName text) (Maybe text)
-prefix inj (QName pre part) = (\pre' -> QName pre' part) <$> inj pre
+prefix inj (QName pref part) = (\pref' -> QName pref' part) <$> inj pref
 {-# INLINE prefix #-}
 
 instance HasLocalPart QName where
-  localPart inj (QName pre part) = (\part' -> QName pre part') <$> inj part
+  localPart inj (QName pref part) = (\part' -> QName pref part') <$> inj part
   {-# INLINE localPart #-}
 
 namespace :: Lens' (NName text) (Maybe text)
