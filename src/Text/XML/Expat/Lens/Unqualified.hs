@@ -109,3 +109,15 @@ allNodes = universeOf (children . traverse)
 
 named :: (Choice p, Applicative f, Eq t) => t -> Overloaded' p f (UNode t) (UNode t)
 named n = filtered (isNamed n)
+
+-- | @parameterized k v@ traverses 'Element's which match the value
+-- @v@ at the key @k@ in their attributes.
+
+parameterized :: (Choice p, Applicative f, Eq t, GenericXMLString t) =>
+                 t -> t -> Overloaded' p f (UNode t) (UNode t)
+parameterized k v = filtered check where
+  check u = case u ^? ix k . to (==v) of
+    Just True -> True
+    _         -> False
+  {-# INLINE check #-}
+{-# INLINE parameterized #-}
