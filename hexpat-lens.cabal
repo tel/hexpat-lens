@@ -11,7 +11,8 @@ build-type:          Simple
 cabal-version:       >=1.10
 
 library
-  exposed-modules:     
+  exposed-modules:
+    Text.XML.Expat.Lens
     Text.XML.Expat.Lens.Unqualified
     Text.XML.Expat.Lens.Parse
     Text.XML.Expat.Lens.Names
