@@ -19,6 +19,5 @@ module Text.XML.Expat.Lens (
   
   ) where
 
-import Text.XML.Expat.Tree
 import Text.XML.Expat.Lens.Unqualified
 import Text.XML.Expat.Lens.Parse
