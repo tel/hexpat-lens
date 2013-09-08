@@ -64,11 +64,15 @@ instance (GenericXMLString a) => At (UNode a) where
 
 instance (GenericXMLString a, Applicative f) => Ixed f (UNode a) where
   ix = ixAt
-  
+
 instance ( GenericXMLString a
          , Applicative f
          , Contravariant f ) => Contains f (UNode a) where
   contains = containsAt
+
+instance Plated (UNode a) where
+  plate = children . traverse
+  {-# INLINE plate #-}
 
 -- | Traverses the children of an 'Element'. This is as
 -- an "Affine", or 0-or-1 target, 'Traversal'. In regex terms, you
@@ -96,10 +100,12 @@ text = dimap go come . right' where
 -- We can use plated/uniplate lenses to traverse all of the elements of
 -- the tree in a bottom up fashion.
 
--- | Produces a list of all 'UNode's in a XML tree.
+-- | Produces a list of all 'UNode's in a XML tree. Synonym for
+-- 'universe'.
 
 allNodes :: UNode t -> [UNode t]
-allNodes = universeOf (children . traverse)
+allNodes = universe
+{-# INLINE allNodes #-}
 
 -- And if we build one sort-of @Traversal@ then we'll have replicated
 -- almost all of the functionality of @NodeClass@ in lenses. This uses
