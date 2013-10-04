@@ -13,13 +13,14 @@ cabal-version:       >=1.10
 library
   exposed-modules:
     Text.XML.Expat.Lens
-    Text.XML.Expat.Lens.Unqualified
-    Text.XML.Expat.Lens.Parse
+    Text.XML.Expat.Lens.Generic
     Text.XML.Expat.Lens.Names
+    Text.XML.Expat.Lens.Parse
+    Text.XML.Expat.Lens.Unqualified
   build-depends:       
       base            >= 4.6      && < 4.7
-    , bytestring      >= 0.10.0.2 && < 0.10.1
     , deepseq         >= 1.3      && < 1.4
+    , bytestring      >= 0.10.0.2 && < 0.10.1
     , hexpat          >= 0.20     && < 0.21
     , lens            >= 3.9      && < 3.10
     , hexpat-tagsoup  == 0.1.*
