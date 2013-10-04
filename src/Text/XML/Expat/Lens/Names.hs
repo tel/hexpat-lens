@@ -38,19 +38,19 @@ class HasLocalPart a where
   localPart :: Lens' (a t) t
 
 prefix :: Lens' (QName text) (Maybe text)
-prefix inj (QName pref part) = (\pref' -> QName pref' part) <$> inj pref
+prefix inj (QName pref part) = (`QName` part) <$> inj pref
 {-# INLINE prefix #-}
 
 instance HasLocalPart QName where
-  localPart inj (QName pref part) = (\part' -> QName pref part') <$> inj part
+  localPart inj (QName pref part) = QName pref <$> inj part
   {-# INLINE localPart #-}
 
 namespace :: Lens' (NName text) (Maybe text)
-namespace inj (NName ns part) = (\ns' -> NName ns' part) <$> inj ns
+namespace inj (NName ns part) = (`NName` part) <$> inj ns
 {-# INLINE namespace #-}
 
 instance HasLocalPart NName where
-  localPart inj (NName ns part) = (\part' -> NName ns part') <$> inj part
+  localPart inj (NName ns part) = NName ns <$> inj part
   {-# INLINE localPart #-}
 
 -- | Iso between a node marked by a "stringy" name to one using a

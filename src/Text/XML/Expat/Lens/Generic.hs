@@ -20,6 +20,7 @@
 {-# LANGUAGE TypeSynonymInstances #-}
 {-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE FlexibleContexts #-}
+{-# LANGUAGE RankNTypes #-}
 
 module Text.XML.Expat.Lens.Generic (
 
@@ -27,7 +28,7 @@ module Text.XML.Expat.Lens.Generic (
   name, attributes, text,
 
   -- * Recursive inspection
-  children, allNodes,
+  children, allNodes, (./),
 
   -- * Filters
   named, parameterized
@@ -83,7 +84,7 @@ instance Eq tag => At (NodeG f tag text) where
         | key == key' = case mayRes of
           Nothing  -> rest
           Just res -> (key, res):rest
-        | otherwise   = (key', res'):(ins key mayRes rest)
+        | otherwise   = (key', res') : ins key mayRes rest
       {-# INLINE ins #-}
   {-# INLINE at #-}
 
@@ -103,7 +104,7 @@ instance Traversable f => Plated (NodeG f tag text) where
 -- can think of it like the @?@ suffix modifier.
 
 children :: Traversal' (NodeG f tag text) (f (NodeG f tag text))
-children inj (Element n a c) = (\c' -> Element n a c') <$> inj c
+children inj (Element n a c) = Element n a <$> inj c
 children _   t               = pure t
 {-# INLINE children #-}
 
@@ -154,3 +155,10 @@ parameterized k v = filtered check where
     _         -> False
   {-# INLINE check #-}
 {-# INLINE parameterized #-}
+
+
+-- | Glue two 'Traversal's together as relations. This is much like
+-- @XPath@'s *slash*.
+
+(./) :: Plated i => Traversal' s i -> Traversal' i a -> Traversal' s a
+l ./ m = l . plate . m

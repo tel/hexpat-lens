@@ -20,6 +20,7 @@
 {-# LANGUAGE MultiParamTypeClasses #-}
 {-# LANGUAGE TypeSynonymInstances #-}
 {-# LANGUAGE FlexibleInstances #-}
+{-# LANGUAGE RankNTypes #-}
 
 module Text.XML.Expat.Lens.Unqualified (
 
@@ -27,7 +28,7 @@ module Text.XML.Expat.Lens.Unqualified (
   name, attributes, text,
 
   -- * Recursive inspection
-  children, allNodes,
+  children, allNodes, (./),
 
   -- * Filters
   named, parameterized
@@ -67,3 +68,6 @@ parameterized :: (Choice p, Applicative f, Eq t, GenericXMLString t) =>
                  t -> t -> Overloaded' p f (UNode t) (UNode t)
 parameterized = G.parameterized
 {-# INLINE parameterized #-}
+
+(./) :: Plated i => Traversal' s i -> Traversal' i a -> Traversal' s a
+(./) = (G../)
