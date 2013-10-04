@@ -36,6 +36,7 @@ module Text.XML.Expat.Lens.Generic (
 
 import Control.Applicative
 import Control.Lens hiding (children)
+import Control.Monad
 
 import Text.XML.Expat.Tree
 
@@ -71,17 +72,26 @@ type instance IxValue (NodeG f tag text) = text
 -- subverted in some other way, such as by modify the 'Attributes'
 -- list directly via the 'attributes' 'Traversal'.
 
-instance (GenericXMLString tag, NodeClass NodeG f) => At (NodeG f tag text) where
-  at k f e = indexed f k (getAttribute e k) <&> \r -> alterAttribute k r e
+instance Eq tag => At (NodeG f tag text) where
+  at k f e =
+    indexed f k (join (e ^? attributes . to (lookup k)))
+    <&> \r -> e & attributes %~ ins k r
+    where
+      ins _   Nothing    [] = []
+      ins key (Just res) [] = [(key, res)]
+      ins key mayRes ((key', res'):rest)
+        | key == key' = case mayRes of
+          Nothing  -> rest
+          Just res -> (key, res):rest
+        | otherwise   = (key', res'):(ins key mayRes rest)
+      {-# INLINE ins #-}
+  {-# INLINE at #-}
 
-instance (GenericXMLString tag, Applicative g, NodeClass NodeG f)
-         => Ixed g (NodeG f tag text) where
+instance (Eq tag, Applicative f) => Ixed f (NodeG c tag text) where
   ix = ixAt
 
-instance ( GenericXMLString tag
-         , Applicative g
-         , Contravariant g
-         , NodeClass NodeG f ) => Contains g (NodeG f tag text) where
+instance (Eq tag, Applicative f, Contravariant f)
+         => Contains f (NodeG c tag text) where
   contains = containsAt
 
 instance Traversable f => Plated (NodeG f tag text) where
@@ -127,15 +137,17 @@ allNodes = universe
 
 -- | Traverses 'Element's which have a particular name.
 
-named :: (Choice p, Applicative f, Eq t) => t -> Overloaded' p f (UNode t) (UNode t)
-named n = filtered (isNamed n)
+named
+  :: (Choice p, Applicative f, Eq tag)
+     => tag -> Overloaded' p f (NodeG c tag text) (NodeG c tag text)
+named n = filtered $ maybe False (== n) . preview name
 {-# INLINE named #-}
 
 -- | @parameterized k v@ traverses 'Element's which match the value
 -- @v@ at the key @k@ in their attributes.
 
-parameterized :: (Choice p, Applicative f, Eq t, GenericXMLString t) =>
-                 t -> t -> Overloaded' p f (UNode t) (UNode t)
+parameterized :: (Choice p, Applicative f, Eq tag, Eq text) =>
+                 tag -> text -> Overloaded' p f (NodeG c tag text) (NodeG c tag text)
 parameterized k v = filtered check where
   check u = case u ^? ix k . to (==v) of
     Just True -> True
