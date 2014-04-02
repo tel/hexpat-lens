@@ -19,7 +19,7 @@
 {-# LANGUAGE TypeFamilies #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
 {-# LANGUAGE TypeSynonymInstances #-}
-{-# LANGUAGE FlexibleInstances #-}
+{-# LANGUAGE FlexibleContexts #-}
 {-# LANGUAGE RankNTypes #-}
 
 module Text.XML.Expat.Lens.Unqualified (
@@ -60,12 +60,15 @@ allNodes :: UNode t -> [UNode t]
 allNodes = G.allNodes
 {-# INLINE allNodes #-}
 
-named :: (Choice p, Applicative f, Eq t) => t -> Overloaded' p f (UNode t) (UNode t)
+named
+  :: (Eq a, Applicative f, Choice p) =>
+     a -> Optic' p f (NodeG f1 a text) (NodeG f1 a text)
 named = G.named
 {-# INLINE named #-}
-
-parameterized :: (Choice p, Applicative f, Eq t, GenericXMLString t) =>
-                 t -> t -> Overloaded' p f (UNode t) (UNode t)
+                                                            
+parameterized
+  :: (Eq (IxValue a),  Applicative f, Choice p, Ixed a) =>
+     Index a -> IxValue a -> Optic' p f a a
 parameterized = G.parameterized
 {-# INLINE parameterized #-}
 

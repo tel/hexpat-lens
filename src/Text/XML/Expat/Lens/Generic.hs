@@ -88,13 +88,9 @@ instance Eq tag => At (NodeG f tag text) where
       {-# INLINE ins #-}
   {-# INLINE at #-}
 
-instance (Eq tag, Applicative f) => Ixed f (NodeG c tag text) where
-  ix = ixAt
-
-instance (Eq tag, Applicative f, Contravariant f)
-         => Contains f (NodeG c tag text) where
-  contains = containsAt
-
+instance (Eq tag) => Ixed (NodeG c tag text) where
+   ix = ixAt
+   
 instance Traversable f => Plated (NodeG f tag text) where
   plate = children . traverse
   {-# INLINE plate #-}
@@ -137,18 +133,17 @@ allNodes = universe
 -- 'Control.Lens.Fold.filtered' so the caveats there apply.
 
 -- | Traverses 'Element's which have a particular name.
-
 named
-  :: (Choice p, Applicative f, Eq tag)
-     => tag -> Overloaded' p f (NodeG c tag text) (NodeG c tag text)
+  :: (Eq a, Applicative f, Choice p) =>
+     a -> Optic' p f (NodeG f1 a text) (NodeG f1 a text)
 named n = filtered $ maybe False (== n) . preview name
 {-# INLINE named #-}
 
 -- | @parameterized k v@ traverses 'Element's which match the value
 -- @v@ at the key @k@ in their attributes.
-
-parameterized :: (Choice p, Applicative f, Eq tag, Eq text) =>
-                 tag -> text -> Overloaded' p f (NodeG c tag text) (NodeG c tag text)
+parameterized
+  :: (Eq (IxValue a), Applicative f, Choice p, Ixed a) =>
+     Index a -> IxValue a -> Optic' p f a a
 parameterized k v = filtered check where
   check u = case u ^? ix k . to (==v) of
     Just True -> True
