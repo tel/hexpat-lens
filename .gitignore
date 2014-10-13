@@ -1,1 +1,4 @@
 dist
+cabal.sandbox.config
+.cabal-sandbox
+samp.xml
