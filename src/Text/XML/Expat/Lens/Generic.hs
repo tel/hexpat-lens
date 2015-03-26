@@ -155,5 +155,6 @@ parameterized k v = filtered check where
 -- | Glue two 'Traversal's together as relations. This is much like
 -- @XPath@'s *slash*.
 
+infixr 9 ./
 (./) :: Plated i => Traversal' s i -> Traversal' i a -> Traversal' s a
 l ./ m = l . plate . m
