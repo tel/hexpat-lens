@@ -72,5 +72,6 @@ parameterized
 parameterized = G.parameterized
 {-# INLINE parameterized #-}
 
+infixr 9 ./
 (./) :: Plated i => Traversal' s i -> Traversal' i a -> Traversal' s a
 (./) = (G../)
