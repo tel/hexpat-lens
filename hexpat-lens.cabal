@@ -9,6 +9,7 @@ copyright:           (c) 2013, Joseph Abrahamson
 category:            XML
 build-type:          Simple
 cabal-version:       >=1.10
+homepage:            https://github.com/tel/hexpat-lens
 
 library
   exposed-modules:
