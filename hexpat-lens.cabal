@@ -1,5 +1,5 @@
 name:                hexpat-lens
-version:             0.1.8
+version:             0.1.9
 x-revision: 1
 synopsis:            Lenses for Hexpat.
 description:         A set of lenses for inspecting and manipulating Hexpat data structures.

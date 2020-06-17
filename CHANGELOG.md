@@ -1,6 +1,6 @@
 # hexpat-lens changelog
 
-## Unreleased
+## 0.1.9 -- 2020-06-17
 
 - Bump base upper bound to build on GHC 8.10.
 
